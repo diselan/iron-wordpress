@@ -1,3 +1,7 @@
 {
-  "name": "diselan/plugin"
+  "name": "diselan/plugin",
+  "type": "wordpress-plugin",
+  "require": {
+    "composer/installers": "v1.0.6"
+  }
 }
