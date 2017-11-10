@@ -10,47 +10,124 @@
  * Domain Path: /languages/
  */
 
-function get_text() {
-	/** These are the lyrics to Hello Dolly */
-	$texto = "Hola Irontec
-	El plugin está en marcha.
-	Espero que sea suficiente
-	como demo 1.";
+/* Registra los Widgets propios del Theme */
 
-	// Here we split it into lines
-	$texto = explode( "\n", $texto );
-
-	// And then randomly choose a line
-	return wptexturize( $texto[ mt_rand( 0, count( $texto ) - 1 ) ] );
+// registrar la funcion que se ejecuta al activar el plugin
+register_activation_hook(__FILE__, 'helloworld_activate');
+ 
+// funcion que se ejecuta al activar el plugin
+function helloworld_activate() {
+    // crear la tabla del plugin e insertar dos registros
+    global $wpdb;
+    $table_name= $wpdb->prefix."helloworld";
+ 
+    $sql = "CREATE TABLE $table_name (
+        `id` mediumint( 9 ) NOT NULL auto_increment,
+        `type` tinytext NOT NULL,
+        `saludo` tinytext NOT NULL,
+        PRIMARY KEY  (`id`)
+        )";
+    $wpdb->query($sql);
+ 
+    $sql = "INSERT INTO $table_name (`id`, `type`, `saludo`)
+        VALUES (1, 'default', 'Hello World')";
+    $wpdb->query($sql);
+ 
+    $sql = "INSERT INTO $table_name (`id`, `type`, `saludo`)
+        VALUES (2, 'custom', 'Hola Mundo')";
+    $wpdb->query($sql);
+ 
+    // añadir la option del plugin
+    add_option('helloworld_saludo_type', 'default');
 }
 
-// This just echoes the chosen line, we'll position it later
-function texto_irontec() {
-	$chosen = get_text();
-	echo "<p id='irontec'>$chosen</p>";
+// registrar la funcion que se ejecuta al desactivar el plugin
+register_deactivation_hook(__FILE__, 'helloworld_deactivate');
+ 
+// funcion que se ejecuta al desactivar el plugin
+function helloworld_deactivate() {
+    // borrar la tabla del plugin
+    global $wpdb;
+    $table_name = $wpdb->prefix."helloworld";
+ 
+    $sql = "DROP TABLE $table_name";
+    $wpdb->query($sql);
+ 
+    // borrar la option del plugin
+    delete_option('helloworld_saludo_type');
 }
 
-// Now we set that function up to execute when the admin_notices action is called
-add_action( 'admin_notices', 'hello_dolly' );
-
-// We need some CSS to position the paragraph
-function irontec_css() {
-	// This makes sure that the positioning is also good for right-to-left languages
-	$x = is_rtl() ? 'left' : 'right';
-
-	echo "
-	<style type='text/css'>
-	#irontec{
-		float: $x;
-		padding-$x: 15px;
-		padding-top: 5px;
-		margin: 0;
-		font-size: 11px;
-	}
-	</style>
-	";
+// registrar la funcion que se ejecuta al desactivar el plugin
+register_deactivation_hook(__FILE__, 'helloworld_deactivate');
+ 
+// crear un item en el panel de administracion
+add_action('admin_menu', 'helloworld_menu');
+ 
+// crear la pagina de opciones del plugin
+function helloworld_menu() {
+    add_options_page('Hello World plugin options', 'Hello World', 8,
+        basename(__FILE__), 'helloworld_options');
+}
+ 
+// funcion que muestra la pagina de opciones del plugin
+function helloworld_options() {
+    // comprobar si la peticion procede del form
+    global $wpdb;
+    $table_name = $wpdb->prefix."helloworld";
+    if (isset($_POST['saludo_custom_new'])
+        && !empty($_POST['saludo_custom_new'])) {
+        $sql = "UPDATE $table_name
+            SET saludo ='{$_POST['saludo_custom_new']}'
+            WHERE type='custom'";
+        $wpdb->query($sql);
+    }
+    if (isset($_POST['saludo_type'])) {
+        update_option('helloworld_saludo_type', $_POST['saludo_type']);
+    }
+ 
+    // mostrar la pagina de opciones
+    $saludo_default = $wpdb->get_var("SELECT saludo
+        FROM $table_name
+        WHERE type='default'" );
+    $saludo_custom = $wpdb->get_var("SELECT saludo
+        FROM $table_name
+        WHERE type='custom'" );
+    $saludo_type = get_option('helloworld_saludo_type');
+    if ($saludo_type == "default") {
+        $checked_default = "checked";
+        $checked_custom = "";
+    } else {
+        $checked_default = "";
+        $checked_custom = "checked";
+    }
+    echo "<div class='wrap'>n";
+    echo "<h2>Hello World plugin options</h2>";
+    echo "<form method='post' action=''>";
+    echo "Display:<br />";
+    echo "<input type='radio' name='saludo_type' value='default'
+        ".$checked_default." /> Message default
+        (<b>".$saludo_default."</b>)<br />";
+    echo "<input type='radio' name='saludo_type' value='custom'
+        ".$checked_custom." /> Message custom
+        (<b>".$saludo_custom."</b>)<br />";
+    echo "New Message custom: <input type='text'
+        name='saludo_custom_new' /><br />";
+    echo "<input type='submit' name='update' value='Update' />";
+    echo "</form>";
+    echo "</div>";
 }
 
-add_action( 'admin_head', 'irontec_css' );
-
+// funcion del plugin para usar en PHP, devuelve un string
+function helloworld() {
+    // recuperar el saludo
+    global $wpdb;
+    $table_name = $wpdb->prefix."helloworld";
+    $saludo_type = get_option('helloworld_saludo_type');
+    $saludo = $wpdb->get_var("SELECT saludo
+       FROM $table_name
+       WHERE type='$saludo_type'" );
+ 
+    // output del plugin
+    return "<p>".$saludo."</p>";
+}
 ?>
