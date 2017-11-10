@@ -3,7 +3,7 @@
   "description": "Plugin para Irontec",
   "keywords": ["wordpress", "plugin", "irontec"],
   "homepage": "https://diselan.com",
-  "license": "MIT",
+  "license": "GPLv2",
   "authors": [
     {
       "name": "Jose A. Garrido",
