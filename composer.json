@@ -1,7 +1,19 @@
 {
-  "name": "diselan/plugin",
+  "name": "diselan/iron-wordpress",
+  "description": "Plugin para Irontec",
+  "keywords": ["wordpress", "plugin", "irontec"],
+  "homepage": "https://diselan.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jose A. Garrido",
+      "email": "diselan@gmail.com",
+      "homepage": "https://diselan.com"
+    }
+  ],
   "type": "wordpress-plugin",
   "require": {
+    "php": ">=5.3.2",
     "composer/installers": "v1.0.6"
   }
 }
