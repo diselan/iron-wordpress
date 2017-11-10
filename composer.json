@@ -15,6 +15,6 @@
   "require": {
     "php": ">=5.3.2",
     "diselan/iron-wordpress": "dev-master",
-    "composer/installers": "v1.0.6"
+    "composer/installers": "v1.4.0"
   }
 }
