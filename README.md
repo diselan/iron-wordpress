@@ -9,9 +9,10 @@ Plugin for wp
  - Instalación en C:composer
  - Generación de archivos y carpetas
  
-3- Instalación de wordpress desde Composer (repositorio github)
- - Generación de composer.json 
+3- Instalación de wordpress desde Composer.
+ - Generación de composer.json para instalación de wordpress y plugins (repositorio github),
  
 4- Creación de plugin+widget de texto:
     - El plugin tiene 2 variantes para modificar el texto y que aparezca en el sidebar
-    - He sido incapaz de instalar el plugin desde github (ver repositorio)
+    - He sido "incapaz" de instalar el plugin desde github (ver repositorio)
+    
