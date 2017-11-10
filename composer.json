@@ -1,0 +1,79 @@
+{
+    "name": "irontec/wp-skeleton",
+    "description": "Setup a new WordPress installation via Composer.",
+    "license": "GPL-2.0+",
+    "type": "project",
+    "keywords": [
+        "WordPress",
+        "skeleton",
+        "CMS",
+        "blog",
+        "composer",
+        "wpackagist"
+    ],
+    "authors": [
+        {
+            "name": "Jose A. Garrido",
+            "email": "diselan@gmail.com",
+            "homepage": "http://diselan.com",
+            "role": "Developer"
+        }
+    ],
+	
+    "repositories": {
+        "0": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        },
+        "1": {
+            "type": "vcs",
+            "url": "https://github.com/diselan/iron-wordpress"
+        },
+        "foo": {
+            "type": "vcs",
+            "url": "https://github.com/diselan/iron-wordpress"
+        },
+	"3": {
+		"type": "package",
+		"package": {
+			"name": "diselan/iron-wordpress",
+			"version": "1.0.0",
+			"dist": {
+			"url": "https://github.com/diselan/iron-wordpress/blob/master/plugin.zip",
+			"type": "zip"
+    }
+	}
+}
+    },
+    "require": {
+        "johnpbloch/wordpress": "@stable",
+        "composer/installers": "@stable",
+        "diselan/iron-wordpress": "dev-master",
+        "vlucas/phpdotenv": "^2.2"
+    },
+    "suggest": {
+        "wp-cli/wp-cli": "@stable"
+    },
+    "extra": {
+        "wordpress-install-dir": "wp",
+        "installer-paths": {
+            "content/mu-plugins/{$name}": [
+                "type:wordpress-muplugin"
+            ],
+            "content/plugins/{$name}": [
+                "type:wordpress-plugin"
+            ],
+            "content/themes/{$name}": [
+                "type:wordpress-theme"
+            ]
+        }
+    },
+    "scripts": {
+        "generate-salts": [
+            "echo '<?php' > salt.php && curl -L https://api.wordpress.org/secret-key/1.1/salt/ >> salt.php"
+        ],
+        "post-create-project-cmd": [
+            "composer run generate-salts"
+        ]
+    }
+}
